@@ -44,3 +44,4 @@ Components read the client with `useClient()` and the connected wallet with the 
 ### Switching networks
 
 A kit client is bound to one chain and RPC endpoint. The cluster dropdown rebuilds the client in a `useMemo` keyed on the cluster and hands the new instance to `ClientProvider`, which reprovisions the subtree. See [`app/lib/client-provider.tsx`](app/lib/client-provider.tsx).
+# solana-wallet-connect
