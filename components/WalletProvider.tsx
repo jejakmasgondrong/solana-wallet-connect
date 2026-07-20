@@ -21,6 +21,7 @@ export default function WalletProvider({
 }: {
   children: React.ReactNode;
 }) {
+  // Bisa ganti ke Mainnet/Testnet kalo mau
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 

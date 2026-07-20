@@ -6,8 +6,8 @@ import WalletProvider from "../components/WalletProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Solana Connect Wallet Test",
-  description: "Simple Solana wallet connection test",
+  title: "Solana Wallet Dashboard",
+  description: "Connect Phantom wallet, view balance, and transaction history",
 };
 
 export default function RootLayout({

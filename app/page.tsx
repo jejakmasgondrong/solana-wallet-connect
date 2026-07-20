@@ -3,42 +3,155 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useEffect, useState } from "react";
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export default function Home() {
   const { connected, publicKey } = useWallet();
   const [mounted, setMounted] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
+  const [network, setNetwork] = useState<string>("");
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (connected && publicKey && mounted) {
+      fetchWalletData();
+    }
+  }, [connected, publicKey, mounted]);
+
+  const fetchWalletData = async () => {
+    if (!publicKey) return;
+    setLoading(true);
+    try {
+      const connection = new Connection("https://api.devnet.solana.com");
+      
+      const balanceInLamports = await connection.getBalance(publicKey);
+      setBalance(balanceInLamports / LAMPORTS_PER_SOL);
+      
+      setNetwork("Devnet");
+      
+      const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 10 });
+      setTransactions(signatures);
+      
+    } catch (error) {
+      console.error("Error fetching wallet data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (timestamp: number | null) => {
+    if (!timestamp) return "N/A";
+    return new Date(timestamp * 1000).toLocaleString();
+  };
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 p-4">
-      <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
-        Solana Connect
-      </h1>
-      <p className="text-xl text-purple-200 mb-12 text-center">
-        Wallet Test
-      </p>
-
-      <div className="transform transition-all duration-300 hover:scale-105">
-        {mounted ? (
-          <WalletMultiButton />
-        ) : (
-          <button className="wallet-adapter-button">
-            Connect Wallet
-          </button>
-        )}
-      </div>
-
-      {connected && publicKey && mounted && (
-        <div className="mt-8 bg-white/10 backdrop-blur-lg rounded-2xl px-6 py-4 border border-white/20">
-          <p className="text-green-400 text-sm font-mono">
-            ✅ Connected: {publicKey.toString().slice(0, 6)}...
-            {publicKey.toString().slice(-6)}
-          </p>
+    <main className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white">
+            💰 Solana Wallet
+          </h1>
+          {mounted ? (
+            <WalletMultiButton />
+          ) : (
+            <button className="wallet-adapter-button">
+              Connect Wallet
+            </button>
+          )}
         </div>
-      )}
+
+        {/* Wallet Info */}
+        {mounted && connected && publicKey ? (
+          <div className="space-y-6">
+            {/* Address & Network */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-purple-300 text-sm mb-1">Address</p>
+                  <p className="text-white font-mono text-sm break-all">
+                    {publicKey.toString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-purple-300 text-sm mb-1">Network</p>
+                  <p className="text-green-400 font-semibold">{network || "Connecting..."}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Balance */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+              <p className="text-purple-300 text-sm mb-1">Balance</p>
+              {loading ? (
+                <p className="text-white text-3xl font-bold animate-pulse">Loading...</p>
+              ) : (
+                <p className="text-white text-3xl font-bold">
+                  {balance !== null ? `${balance.toFixed(4)} SOL` : "0 SOL"}
+                </p>
+              )}
+              <button
+                onClick={fetchWalletData}
+                className="mt-4 text-sm bg-purple-500/30 hover:bg-purple-500/50 text-white px-4 py-2 rounded-lg transition-all duration-300"
+              >
+                🔄 Refresh
+              </button>
+            </div>
+
+            {/* Transaction History */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+              <p className="text-purple-300 text-sm mb-4">Transaction History</p>
+              {loading ? (
+                <p className="text-white animate-pulse">Loading transactions...</p>
+              ) : transactions.length > 0 ? (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {transactions.map((tx, index) => (
+                    <div
+                      key={index}
+                      className="bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-all duration-300"
+                    >
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-white font-mono">
+                          {tx.signature.slice(0, 8)}...{tx.signature.slice(-8)}
+                        </span>
+                        <span className="text-purple-300">
+                          {formatDate(tx.blockTime)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center mt-1 text-xs">
+                        <span className="text-gray-400">
+                          Status: {tx.confirmationStatus || "Confirmed"}
+                        </span>
+                        <a
+                          href={`https://explorer.solana.com/tx/${tx.signature}?cluster=devnet`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                          🔗 View
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-400">No transactions found</p>
+              )}
+            </div>
+          </div>
+        ) : mounted ? (
+          <div className="text-center py-20">
+            <p className="text-purple-200 text-xl">
+              👆 Connect your wallet to get started
+            </p>
+          </div>
+        ) : null}
+      </div>
     </main>
   );
 }
