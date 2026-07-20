@@ -1,30 +1,13 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./components/providers";
-import { AppHeader } from "./components/app-header";
-import { GridBackground } from "./components/grid-background";
+import WalletProvider from "../components/WalletProvider";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Solana Kit Starter",
-  description:
-    "Wallet connection and on-chain actions with @solana/kit, the kit plugin client, and @solana/react",
-  icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
-  },
+  title: "Solana Connect Wallet Test",
+  description: "Simple Solana wallet connection test",
 };
 
 export default function RootLayout({
@@ -34,16 +17,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-          <div className="relative min-h-screen bg-background text-foreground">
-            <GridBackground />
-            <div className="relative z-10">
-              <AppHeader />
-              {children}
-            </div>
-          </div>
-        </Providers>
+      <body className={inter.className} suppressHydrationWarning>
+        <WalletProvider>{children}</WalletProvider>
       </body>
     </html>
   );

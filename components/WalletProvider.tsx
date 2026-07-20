@@ -14,7 +14,6 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 import { useMemo } from "react";
 
-// Import CSS wallet adapter
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 export default function WalletProvider({
@@ -22,7 +21,6 @@ export default function WalletProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // Pilih network (devnet, testnet, mainnet-beta)
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
