@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Clean config untuk production
+  // Clean config for production
   reactStrictMode: true,
 };
 

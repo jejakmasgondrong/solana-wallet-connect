@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Custom style untuk wallet button */
+/* Custom style for wallet button */
 .wallet-adapter-button {
   background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
   border-radius: 16px !important;
