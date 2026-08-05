@@ -19,6 +19,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         <WalletProvider>{children}</WalletProvider>
+        <footer className="border-t border-gray-800 py-4 text-center">
+          <a
+            href="https://www.linkedin.com/in/rsatriya-wicaksana-56b026ab/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-gray-500 hover:text-emerald-400 transition-colors"
+          >
+            Built by RSatriya · Contact Me
+          </a>
+        </footer>
       </body>
     </html>
   );
