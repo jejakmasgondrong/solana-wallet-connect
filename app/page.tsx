@@ -76,6 +76,53 @@ export default function Home() {
           )}
         </div>
 
+        <p className="mb-8 text-center text-sm text-purple-200/90 max-w-2xl mx-auto">
+          Connect your Phantom or Solflare wallet to inspect live Solana devnet
+          data. This dashboard shows your wallet address, current network,
+          SOL balance, and recent transaction history — everything settles
+          on-chain and is read directly from the Solana network.
+        </p>
+
+        <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+          <div className="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/10">
+            <h2 className="text-purple-300 text-sm font-semibold mb-1">Live Balance</h2>
+            <p className="text-xs text-white/70">
+              See your SOL balance in real time, refreshed straight from the
+              devnet cluster as soon as your wallet connects.
+            </p>
+          </div>
+          <div className="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/10">
+            <h2 className="text-purple-300 text-sm font-semibold mb-1">Transaction History</h2>
+            <p className="text-xs text-white/70">
+              Browse your recent on-chain activity with signatures, amounts,
+              and timestamps for every confirmed transaction.
+            </p>
+          </div>
+          <div className="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/10">
+            <h2 className="text-purple-300 text-sm font-semibold mb-1">Wallet-first &amp; Keyless</h2>
+            <p className="text-xs text-white/70">
+              No account, no password. Your wallet signs each read and the app
+              never touches your private keys.
+            </p>
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-5 max-w-3xl mx-auto">
+          <h2 className="text-purple-300 text-sm font-semibold mb-2">
+            Why run a wallet dashboard on devnet?
+          </h2>
+          <p className="text-xs text-white/70 leading-relaxed">
+            A devnet dashboard is a safe place to understand how Solana wallets
+            and RPC calls work before touching real funds. You can experiment
+            with airdropped SOL, observe how balances refresh, study
+            transaction signatures and recent blocks, and learn the wallet
+            adapter flow — all without any financial risk. When you are ready,
+            the same connection pattern applies to mainnet, which makes this
+            dashboard a handy reference for anyone exploring Solana
+            development.
+          </p>
+        </div>
+
         {/* Wallet Info */}
         {mounted && connected && publicKey ? (
           <div className="space-y-6">
