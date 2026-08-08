@@ -2,49 +2,59 @@
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useEffect, useState } from "react";
-import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import {
+  Connection,
+  LAMPORTS_PER_SOL,
+  type ConfirmedSignatureInfo,
+} from "@solana/web3.js";
 
 export default function Home() {
   const { connected, publicKey } = useWallet();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
   const [balance, setBalance] = useState<number | null>(null);
-  const [network, setNetwork] = useState<string>("");
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [network, setNetwork] = useState<string>("Devnet");
+  const [transactions, setTransactions] = useState<ConfirmedSignatureInfo[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (connected && publicKey && mounted) {
-      fetchWalletData();
-    }
-  }, [connected, publicKey, mounted]);
-
-  const fetchWalletData = async () => {
+  const fetchWalletData = useCallback(async () => {
     if (!publicKey) return;
     setLoading(true);
+    setError(null);
     try {
       const connection = new Connection("https://api.devnet.solana.com");
-      
+
       const balanceInLamports = await connection.getBalance(publicKey);
       setBalance(balanceInLamports / LAMPORTS_PER_SOL);
-      
+
       setNetwork("Devnet");
-      
-      const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 10 });
+
+      const signatures = await connection.getSignaturesForAddress(publicKey, {
+        limit: 10,
+      });
       setTransactions(signatures);
-      
     } catch (error) {
       console.error("Error fetching wallet data:", error);
+      setError(
+        "Failed to fetch wallet data. Check your connection or the RPC endpoint."
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }, [publicKey]);
 
-  const formatDate = (timestamp: number | null) => {
+  useEffect(() => {
+    if (connected && publicKey) {
+      window.setTimeout(() => fetchWalletData(), 0);
+    }
+  }, [connected, publicKey, fetchWalletData]);
+
+  const formatDate = (timestamp: number | null | undefined) => {
     if (!timestamp) return "N/A";
     return new Date(timestamp * 1000).toLocaleString();
   };
@@ -94,6 +104,9 @@ export default function Home() {
                 <p className="text-white text-3xl font-bold">
                   {balance !== null ? `${balance.toFixed(4)} SOL` : "0 SOL"}
                 </p>
+              )}
+              {error && (
+                <p className="text-red-400 text-sm mt-2">{error}</p>
               )}
               <button
                 onClick={fetchWalletData}

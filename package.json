@@ -18,7 +18,7 @@
     "tailwind",
     "typescript"
   ],
-  "version": "0.0.0",
+  "version": "0.0.3",
   "private": true,
   "engines": {
     "node": ">=24"

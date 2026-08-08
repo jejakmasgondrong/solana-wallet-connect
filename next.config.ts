@@ -6,7 +6,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  "connect-src 'self'",
+  "connect-src 'self' https://api.devnet.solana.com wss://api.devnet.solana.com https://api.testnet.solana.com wss://api.testnet.solana.com https://api.mainnet-beta.solana.com wss://api.mainnet-beta.solana.com http://localhost:8899 ws://localhost:8900",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",
