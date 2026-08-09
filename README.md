@@ -44,4 +44,27 @@ Components read the client with `useClient()` and the connected wallet with the 
 ### Switching networks
 
 A kit client is bound to one chain and RPC endpoint. The cluster dropdown rebuilds the client in a `useMemo` keyed on the cluster and hands the new instance to `ClientProvider`, which reprovisions the subtree. See [`app/lib/client-provider.tsx`](app/lib/client-provider.tsx).
-# solana-wallet-connect
+
+## Deploy
+
+Deploy on Vercel (or any Node host). Create `.env.local` if you need to override the canonical site URL:
+
+```env
+NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
+```
+
+If unset, the app defaults to public devnet endpoints for RPC/airdrop.
+
+## Notes
+
+- **Devnet first.** The Airdrop button is available on non-mainnet clusters for easy testing.
+- The client is always built with a wallet signer as payer; wallet approval is required per transaction.
+- Common issues are documented in `DEBUGGING.md`.
+
+## License
+
+MIT — free for learning or portfolio purposes.
+
+## Author
+
+Gondrong — [jejakmasgondrong](https://github.com/jejakmasgondrong)
